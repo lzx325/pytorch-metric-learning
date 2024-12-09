@@ -40,16 +40,23 @@ class MatchFinder:
         return matches
 
     # where x and y are already matched pairs
-    def is_match(self, x, y, threshold=None):
+    def is_match(self, x, y, threshold=None, return_metric_values = False):
         threshold = threshold if threshold is not None else self.threshold
         with torch.no_grad():
             dist = self.distance.pairwise_distance(x, y)
+            print(dist)
             output = (
                 dist >= threshold if self.distance.is_inverted else dist <= threshold
             )
             if output.nelement() == 1:
-                return output.detach().item()
-            return output.cpu().numpy()
+                if return_metric_values:
+                    return output.detach().item(), dist.detach().item()
+                else:
+                    return output.detach().item()
+            if return_metric_values:
+                return output.cpu().numpy(), dist.cpu().numpy()
+            else:
+                return output.cpu().numpy()
 
 
 class InferenceModel:
@@ -132,10 +139,10 @@ class InferenceModel:
         )
 
     # where x and y are already matched pairs
-    def is_match(self, x, y, threshold=None):
+    def is_match(self, x, y, threshold=None, return_metric_values=False):
         x = self.get_embeddings(x)
         y = self.get_embeddings(y)
-        return self.match_finder.is_match(x, y, threshold)
+        return self.match_finder.is_match(x, y, threshold,return_metric_values=return_metric_values)
 
     def save_knn_func(self, filename):
         self.knn_func.save(filename)

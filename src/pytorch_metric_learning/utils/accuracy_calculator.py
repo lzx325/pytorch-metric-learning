@@ -493,7 +493,6 @@ class AccuracyCalculator:
 
         if any(x in self.requires_clustering() for x in self.get_curr_metrics()):
             kwargs["cluster_labels"] = self.get_cluster_labels(**kwargs)
-
         return self._get_accuracy(self.curr_function_dict, **kwargs)
 
     def _get_accuracy(self, function_dict, **kwargs):

@@ -31,7 +31,6 @@ class ModuleWithRecordsAndReducer(ModuleWithRecords):
                     else copy.deepcopy(reducer)
                 )
             self.reducer = MultipleReducers(reducer_dict)
-
     def sub_loss_names(self):
         return ["loss"]
 

@@ -35,6 +35,7 @@ def get_matches_and_diffs(labels, ref_labels=None):
     labels2 = ref_labels.unsqueeze(0)
     matches = (labels1 == labels2).byte()
     diffs = matches ^ 1
+
     if ref_labels is labels:
         matches.fill_diagonal_(0)
     return matches, diffs
@@ -86,7 +87,7 @@ def neg_pairs_from_tuple(indices_tuple):
 
 def get_all_triplets_indices(labels, ref_labels=None):
     matches, diffs = get_matches_and_diffs(labels, ref_labels)
-    triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
+    triplets = matches.unsqueeze(2) * diffs.unsqueeze(1) # an anchor image matching the second image (positive) and differing with the third image (negative)
     return torch.where(triplets)
 
 

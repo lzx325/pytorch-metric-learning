@@ -31,6 +31,7 @@ class TripletMarginLoss(BaseMetricLossFunction):
         self.add_to_recordable_attributes(list_of_names=["margin"], is_stat=False)
 
     def compute_loss(self, embeddings, labels, indices_tuple, ref_emb, ref_labels):
+
         indices_tuple = lmu.convert_to_triplets(
             indices_tuple, labels, ref_labels, t_per_anchor=self.triplets_per_anchor
         )
@@ -50,7 +51,6 @@ class TripletMarginLoss(BaseMetricLossFunction):
             loss = torch.nn.functional.softplus(violation)
         else:
             loss = torch.nn.functional.relu(violation)
-
         return {
             "loss": {
                 "losses": loss,
